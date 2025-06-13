@@ -15,7 +15,7 @@ actions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 alpha = 0.5
 gamma = 0.99  # povećan gamma
 epsilon = 0.3
-episodes = 10000
+episodes = 1000
 max_steps = 2500
 
 random.seed(42)
@@ -150,7 +150,7 @@ for ep in range(episodes):
 
     all_steps.append(steps)
 
-    if ep in [episodes - 1]:
+    if ep in [0 , episodes - 1]:
         full_path = path if reached_goal else path + bfs_path(pos, goal, maze)
         episode_paths.append((ep, full_path))
 
@@ -200,4 +200,4 @@ def update(frame_data):
 
 ani = animation.FuncAnimation(fig, update, frames=frames, interval=2, blit=True)
 plt.show()
-ani.save("zmija_9999.gif", writer='pillow')
+ani.save("zmija_0.gif", writer='pillow')
