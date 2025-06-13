@@ -14,6 +14,7 @@ This repo contains a series of **short examples** and a **final mini project**, 
 - Introduction to IoT with **Blynk**
 - Using **Raspberry Pi** for GPIO and simple automation
 - Building and structuring real-world mini-projects
+- Machine learning examples 2 projects facial expressions and snake in labirint
 
 ---
 
