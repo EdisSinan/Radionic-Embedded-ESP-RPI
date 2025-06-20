@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LED PWM & IR Kontrola</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            text-align: center;
+            padding-top: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        input[type=range] {
+            width: 60%;
+            margin: 20px 0;
+        }
+        .status {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .status span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>LED PWM & IR Kontrola</h1>
+
+    <input type="range" id="brightness" min="0" max="1" step="0.01" value="0" oninput="updateLED()">
+    <div class="status">
+        <p>LED Jačina: <span id="ledVal">0</span></p>
+        <p>IR Detekcija: <span id="irVal">Nepoznato</span></p>
+    </div>
+
+    <script>
+        const slider = document.getElementById("brightness");
+        const ledVal = document.getElementById("ledVal");
+        const irVal = document.getElementById("irVal");
+
+        function updateLED() {
+            fetch("/set", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ value: slider.value })
+            });
+        }
+
+        function refreshStatus() {
+            fetch("/status")
+                .then(res => res.json())
+                .then(data => {
+                    slider.value = data.brightness;
+                    ledVal.innerText = data.brightness;
+                    irVal.innerText = data.ir ? "PRISUTNOST" : "NEMA";
+                });
+        }
+
+        setInterval(refreshStatus, 2000);
+        window.onload = refreshStatus;
+    </script>
+</body>
+</html>

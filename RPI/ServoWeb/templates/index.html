@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Servo Kontrola</title>
+    <style>
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #arrow {
+            width: 100px;
+            transition: transform 0.2s ease-in-out;
+            margin-top: 20px;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Kontrola Servo Motora</h2>
+
+        <!-- Slider -->
+        <input type="range" min="-1" max="1" step="0.01" value="0" id="servoSlider" onchange="sliderChanged()">
+        <br><br>
+
+        <!-- Unos stepena -->
+        <label for="angleInput">Unesi ugao (°): </label>
+        <input type="number" id="angleInput" min="-90" max="90" step="1">
+        <button onclick="applyManualAngle()">Primijeni</button>
+
+        <br>
+        <img src="../static/arrow.png" id="arrow">
+    </div>
+
+    <script>
+        const slider = document.getElementById("servoSlider");
+        const arrow = document.getElementById("arrow");
+        const angleInput = document.getElementById("angleInput");
+
+        function sendAngle(angleValue) {
+            // Šaljemo angle (od -1 do 1)
+            fetch('/set_servo', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ angle: angleValue })
+            });
+        }
+
+        function sliderChanged() {
+            let angle = parseFloat(slider.value);
+            let deg = angle * 90;
+            arrow.style.transform = `rotate(${deg}deg)`;
+            angleInput.value = deg.toFixed(0);
+            sendAngle(angle);
+        }
+
+        function applyManualAngle() {
+            let deg = parseFloat(angleInput.value);
+            if (isNaN(deg) || deg < -90 || deg > 90) {
+                alert("Unesi broj između -90 i 90!");
+                return;
+            }
+            let angle = deg / 90;
+            slider.value = angle.toFixed(2);
+            arrow.style.transform = `rotate(${deg}deg)`;
+            sendAngle(angle);
+        }
+    </script>
+</body>
+</html>
